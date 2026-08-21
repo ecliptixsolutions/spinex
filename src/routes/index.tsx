@@ -19,6 +19,7 @@ import {
   CircleDot,
   Syringe,
   Wrench,
+  Calendar,
   CalendarCheck,
 } from "lucide-react";
 
@@ -104,6 +105,15 @@ const TRUST = [
   "Natural, Non-Surgical Care",
 ];
 
+const TIME_SLOTS = [
+  "09:00 AM - 09:30 AM",
+  "10:00 AM - 10:30 AM",
+  "11:00 AM - 11:30 AM",
+  "02:00 PM - 02:30 PM",
+  "03:00 PM - 03:30 PM",
+  "04:00 PM - 04:30 PM",
+];
+
 const VCARD = [
   "BEGIN:VCARD",
   "VERSION:3.0",
@@ -130,6 +140,13 @@ function saveContact() {
   downloadBlob(new Blob([VCARD], { type: "text/vcard;charset=utf-8" }), "spine-x-chiropractic.vcf");
 }
 
+function formatDateInputValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="mb-5 text-center">
@@ -142,7 +159,8 @@ function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
 
 function Index() {
   const [cardUrl, setCardUrl] = useState(WEBSITE);
-  const [form, setForm] = useState({ name: "", phone: "", email: "", need: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", need: "", date: "", time: "" });
+  const today = formatDateInputValue(new Date());
 
   useEffect(() => {
     setCardUrl(window.location.href.split("#")[0] ?? WEBSITE);
@@ -178,7 +196,7 @@ function Index() {
 
   function submitEnquiry(e: React.FormEvent) {
     e.preventDefault();
-    const msg = `Appointment request%0A%0AName: ${form.name}%0APhone: ${form.phone}%0AEmail: ${form.email || "-"}%0ARequirement: ${form.need}`;
+    const msg = `Appointment request%0A%0AName: ${form.name}%0APhone: ${form.phone}%0AEmail: ${form.email || "-"}%0ARequirement: ${form.need}%0ADate: ${form.date}%0ATime Slot: ${form.time}`;
     window.open(`https://wa.me/91${PHONE}?text=${msg}`, "_blank");
   }
 
@@ -190,10 +208,10 @@ function Index() {
   ];
 
   return (
-    <main className="mx-auto w-full max-w-[560px] px-4 pb-28 pt-5 sm:px-5">
+    <main className="mx-auto w-full max-w-[560px] overflow-hidden px-3 pb-32 pt-4 min-[380px]:px-4 sm:px-5 sm:pb-28 sm:pt-5">
       {/* Profile / hero */}
-      <header className="overflow-hidden rounded-[2rem] bg-card shadow-[var(--shadow-float)]">
-        <div className="brand-gradient px-5 pb-16 pt-6 text-center">
+      <header className="overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-float)] min-[380px]:rounded-[2rem]">
+        <div className="brand-gradient px-4 pb-16 pt-6 text-center min-[380px]:px-5">
           <div className="mx-auto flex flex-col items-center">
             <img
               src={LOGO_SRC}
@@ -214,7 +232,7 @@ function Index() {
             ))}
           </div>
         </div>
-        <div className="-mt-14 px-5 pb-6 text-center">
+        <div className="-mt-14 px-4 pb-6 text-center min-[380px]:px-5">
           <div className="mx-auto h-32 w-32 overflow-hidden rounded-full border-4 border-card bg-card shadow-[var(--shadow-card)]">
             <img
               src={DOCTOR_PHOTO_SRC}
@@ -232,23 +250,23 @@ function Index() {
           </p>
           <p className="mt-2 text-xs text-muted-foreground">Spine-X Chiropractic Clinic · Akota, Vadodara</p>
 
-          <div className="mt-6 grid grid-cols-2 gap-2.5">
+          <div className="mt-6 grid grid-cols-1 gap-2.5 min-[360px]:grid-cols-2">
             {actions.map(({ label, icon: Icon, href }) => (
               <a
                 key={label}
                 href={href}
                 target={href.startsWith("http") ? "_blank" : undefined}
                 rel="noreferrer"
-                className="flex items-center gap-3 rounded-2xl border border-border soft-gradient px-3.5 py-3 text-left text-xs font-semibold text-secondary-foreground transition-shadow hover:shadow-[var(--shadow-card)] active:scale-[0.98]"
+                className="flex min-w-0 items-center gap-3 rounded-2xl border border-border soft-gradient px-3.5 py-3 text-left text-xs font-semibold text-secondary-foreground transition-shadow hover:shadow-[var(--shadow-card)] active:scale-[0.98]"
               >
                 <span className="brand-gradient flex h-8 w-8 shrink-0 items-center justify-center rounded-xl">
                   <Icon className="h-4 w-4 text-primary-foreground" aria-hidden />
                 </span>
-                <span className="leading-tight">{label}</span>
+                <span className="min-w-0 leading-tight">{label}</span>
               </a>
             ))}
           </div>
-          <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+          <div className="mt-2.5 grid grid-cols-1 gap-2.5 min-[360px]:grid-cols-2">
             <button
               type="button"
               onClick={saveContact}
@@ -268,7 +286,7 @@ function Index() {
       </header>
 
       {/* About */}
-      <section className="surface-card mt-4 p-5">
+      <section className="surface-card mt-4 p-4 min-[380px]:p-5">
         <SectionTitle eyebrow="About" title="Your Spine Health Specialist" />
         <p className="text-sm leading-relaxed text-muted-foreground">
           Dr. Chandresh Zinzala is a qualified Chiropractor &amp; Osteopath with COMT(UK) certification and a
@@ -285,7 +303,7 @@ function Index() {
       </section>
 
       {/* Services */}
-      <section className="surface-card mt-4 p-5">
+      <section className="surface-card mt-4 p-4 min-[380px]:p-5">
         <SectionTitle eyebrow="Services" title="Problems We Treat" />
         <div className="grid gap-2">
           {CONDITIONS.map((c) => (
@@ -301,25 +319,25 @@ function Index() {
       </section>
 
       {/* Therapies */}
-      <section className="surface-card mt-4 p-5">
+      <section className="surface-card mt-4 p-4 min-[380px]:p-5">
         <SectionTitle eyebrow="Therapies" title="Techniques We Use" />
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2">
           {THERAPIES.map(({ name, icon: Icon }) => (
             <div
               key={name}
-              className="flex items-start gap-2 rounded-2xl border border-border bg-card p-3 transition-shadow hover:shadow-[var(--shadow-card)]"
+              className="flex min-w-0 items-start gap-2 rounded-2xl border border-border bg-card p-3 transition-shadow hover:shadow-[var(--shadow-card)]"
             >
               <span className="brand-gradient flex h-7 w-7 shrink-0 items-center justify-center rounded-xl">
                 <Icon className="h-3.5 w-3.5 text-primary-foreground" aria-hidden />
               </span>
-              <p className="text-xs font-semibold leading-snug text-foreground">{name}</p>
+              <p className="min-w-0 text-xs font-semibold leading-snug text-foreground">{name}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Gallery */}
-      <section className="surface-card mt-4 p-5">
+      <section className="surface-card mt-4 p-4 min-[380px]:p-5">
         <SectionTitle eyebrow="Gallery" title="Inside The Clinic" />
         <div className="grid grid-cols-3 gap-2">
           {GALLERY.map((g) => (
@@ -335,7 +353,7 @@ function Index() {
       </section>
 
       {/* Trust */}
-      <section className="surface-card mt-4 p-5">
+      <section className="surface-card mt-4 p-4 min-[380px]:p-5">
         <SectionTitle eyebrow="Why Choose Us" title="Care You Can Trust" />
         <div className="flex flex-wrap gap-2">
           {TRUST.map((t) => (
@@ -350,7 +368,7 @@ function Index() {
       </section>
 
       {/* Contact / location */}
-      <section className="surface-card mt-4 p-5">
+      <section className="surface-card mt-4 p-4 min-[380px]:p-5">
         <SectionTitle eyebrow="Contact" title="Visit Our Clinic" />
         <a href={`tel:${TEL}`} className="flex items-center gap-3 rounded-2xl border border-border p-3">
           <Phone className="h-4 w-4 shrink-0 text-accent" aria-hidden />
@@ -374,7 +392,7 @@ function Index() {
             <p>4:00 PM – 8:00 PM</p>
           </div>
         </div>
-        <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="mt-3 grid grid-cols-1 gap-2 min-[360px]:grid-cols-3">
           <a
             href={`tel:${TEL}`}
             className="flex items-center justify-center gap-1.5 rounded-2xl border border-border bg-secondary/60 py-2.5 text-xs font-semibold text-secondary-foreground"
@@ -401,7 +419,7 @@ function Index() {
       </section>
 
       {/* Appointment */}
-      <section id="book" className="brand-gradient mt-4 rounded-3xl p-5 text-primary-foreground">
+      <section id="book" className="brand-gradient mt-4 rounded-3xl p-4 text-primary-foreground min-[380px]:p-5">
         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] opacity-80">Appointment</p>
         <h2 className="mt-1 font-display text-xl font-semibold">Book Your Consultation</h2>
         <form onSubmit={submitEnquiry} className="mt-4 grid gap-2">
@@ -433,6 +451,42 @@ function Index() {
             onChange={(e) => setForm({ ...form, need: e.target.value })}
             className="rounded-2xl border border-primary-foreground/25 bg-primary-foreground/12 px-3 py-2.5 text-sm placeholder:text-primary-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary-foreground/40"
           />
+          <label className="relative block">
+            <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-70" aria-hidden />
+            {!form.date && (
+              <span className="pointer-events-none absolute left-9 top-1/2 -translate-y-1/2 text-sm text-primary-foreground/60">
+                Select Date
+              </span>
+            )}
+            <input
+              required
+              type="date"
+              min={today}
+              value={form.date}
+              onClick={(e) => e.currentTarget.showPicker?.()}
+              onChange={(e) => setForm({ ...form, date: e.target.value, time: "" })}
+              className={`w-full rounded-2xl border border-primary-foreground/25 bg-primary-foreground/12 px-9 py-2.5 text-sm transition focus:outline-none focus:ring-2 focus:ring-primary-foreground/40 ${
+                form.date ? "text-primary-foreground" : "text-transparent"
+              }`}
+            />
+          </label>
+          <label className="relative block">
+            <Clock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-70" aria-hidden />
+            <select
+              required
+              disabled={!form.date}
+              value={form.time}
+              onChange={(e) => setForm({ ...form, time: e.target.value })}
+              className="w-full appearance-none rounded-2xl border border-primary-foreground/25 bg-primary-foreground/12 px-9 py-2.5 text-sm text-primary-foreground transition focus:outline-none focus:ring-2 focus:ring-primary-foreground/40 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <option value="">Select Time Slot</option>
+              {TIME_SLOTS.map((slot) => (
+                <option key={slot} value={slot} className="text-foreground">
+                  {slot}
+                </option>
+              ))}
+            </select>
+          </label>
           <button
             type="submit"
             className="mt-1 flex items-center justify-center gap-2 rounded-2xl bg-card px-4 py-3 text-sm font-bold text-primary transition-transform active:scale-[0.99]"
@@ -449,7 +503,7 @@ function Index() {
       </section>
 
       {/* QR / share */}
-      <section className="surface-card mt-4 p-5 text-center">
+      <section className="surface-card mt-4 p-4 text-center min-[380px]:p-5">
         <SectionTitle eyebrow="Share" title="Scan This Card" />
         <img
           src={qrSrc}
@@ -467,7 +521,7 @@ function Index() {
           >
             <Download className="h-4 w-4 text-primary" aria-hidden /> Download QR
           </button>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2">
             <button
               type="button"
               onClick={shareCard}
@@ -490,11 +544,11 @@ function Index() {
       </section>
 
       {/* Sticky quick actions */}
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-card/95 px-4 py-2.5 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-card/95 px-3 py-2.5 backdrop-blur min-[380px]:px-4">
         <div className="mx-auto grid max-w-[560px] grid-cols-3 gap-2">
           <a
             href={`tel:${TEL}`}
-            className="flex items-center justify-center gap-1.5 rounded-2xl border border-border py-2.5 text-xs font-semibold text-foreground"
+            className="flex min-w-0 items-center justify-center gap-1 rounded-2xl border border-border px-1 py-2.5 text-[0.7rem] font-semibold text-foreground min-[380px]:gap-1.5 min-[380px]:text-xs"
           >
             <Phone className="h-4 w-4 text-primary" aria-hidden /> Call
           </a>
@@ -502,18 +556,18 @@ function Index() {
             href={`https://wa.me/91${PHONE}`}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-1.5 rounded-2xl border border-border py-2.5 text-xs font-semibold text-foreground"
+            className="flex min-w-0 items-center justify-center gap-1 rounded-2xl border border-border px-1 py-2.5 text-[0.7rem] font-semibold text-foreground min-[380px]:gap-1.5 min-[380px]:text-xs"
           >
             <MessageCircle className="h-4 w-4 text-accent" aria-hidden /> WhatsApp
           </a>
           <a
             href="#book"
-            className="brand-gradient flex items-center justify-center gap-1.5 rounded-2xl py-2.5 text-xs font-bold text-primary-foreground"
+            className="brand-gradient flex min-w-0 items-center justify-center gap-1 rounded-2xl px-1 py-2.5 text-[0.7rem] font-bold text-primary-foreground min-[380px]:gap-1.5 min-[380px]:text-xs"
           >
             <CalendarCheck className="h-4 w-4" aria-hidden /> Book
           </a>
         </div>
-        <p className="mt-2 text-center text-sm text-muted-foreground">
+        <p className="mt-2 text-center text-xs text-muted-foreground min-[380px]:text-sm">
           Designed and Developed by{" "}
           <a
             href="https://www.ecliptixsolutions.com/"
