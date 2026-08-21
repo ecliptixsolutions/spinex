@@ -57,7 +57,7 @@ const ADDRESS_LINES = [
 const MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=Spine-X+Chiropractic+Clinic+Pratham+Plaza+MujMahuda+Road+Akota+Vadodara+390020";
 const LOGO_SRC = "/images/logo.png";
-const DOCTOR_PHOTO_SRC = "/images/PDFGallery_20260818_212510_page-0001.jpg";
+const DOCTOR_PHOTO_SRC = "/images/image.png";
 
 const CONDITIONS = [
   { name: "Back Pain", note: "Lumbar pain from muscle, tendon or disc injury." },
@@ -237,7 +237,7 @@ function Index() {
             <img
               src={DOCTOR_PHOTO_SRC}
               alt="Dr. Chandresh Zinzala, Chiropractor & Osteopath at Spine-X Chiropractic Clinic"
-              className="h-full w-full object-cover object-top"
+              className="h-full w-full scale-125 object-cover object-top"
               width={256}
               height={256}
             />
@@ -570,12 +570,12 @@ function Index() {
         <p className="mt-2 text-center text-xs text-muted-foreground min-[380px]:text-sm">
           Designed and Developed by{" "}
           <a
-            href="https://www.ecliptixsolutions.com/"
+            href="https://vynkcard.com/"
             target="_blank"
             rel="noreferrer"
             className="font-semibold text-foreground underline-offset-2 hover:text-primary hover:underline"
           >
-            Ecliptix Solutions
+            Vynkcard
           </a>
         </p>
       </div>
