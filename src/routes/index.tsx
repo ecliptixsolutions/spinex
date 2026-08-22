@@ -106,12 +106,14 @@ const TRUST = [
 ];
 
 const TIME_SLOTS = [
-  "09:00 AM - 09:30 AM",
-  "10:00 AM - 10:30 AM",
-  "11:00 AM - 11:30 AM",
-  "02:00 PM - 02:30 PM",
-  "03:00 PM - 03:30 PM",
-  "04:00 PM - 04:30 PM",
+  "09:00 AM - 10:00 AM",
+  "10:00 AM - 11:00 AM",
+  "11:00 AM - 12:00 PM",
+  "12:00 PM - 01:00 PM",
+  "04:00 PM - 05:00 PM",
+  "05:00 PM - 06:00 PM",
+  "06:00 PM - 07:00 PM",
+  "07:00 PM - 08:00 PM",
 ];
 
 const VCARD = [
@@ -159,7 +161,7 @@ function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
 
 function Index() {
   const [cardUrl, setCardUrl] = useState(WEBSITE);
-  const [form, setForm] = useState({ name: "", phone: "", email: "", need: "", date: "", time: "" });
+  const [form, setForm] = useState({ name: "", phone: "", need: "", date: "", time: "" });
   const today = formatDateInputValue(new Date());
 
   useEffect(() => {
@@ -196,7 +198,7 @@ function Index() {
 
   function submitEnquiry(e: React.FormEvent) {
     e.preventDefault();
-    const msg = `Appointment request%0A%0AName: ${form.name}%0APhone: ${form.phone}%0AEmail: ${form.email || "-"}%0ARequirement: ${form.need}%0ADate: ${form.date}%0ATime Slot: ${form.time}`;
+    const msg = `Appointment request%0A%0AName: ${form.name}%0APhone: ${form.phone}%0ARequirement: ${form.need}%0ADate: ${form.date}%0ATime Slot: ${form.time}`;
     window.open(`https://wa.me/91${PHONE}?text=${msg}`, "_blank");
   }
 
@@ -233,11 +235,11 @@ function Index() {
           </div>
         </div>
         <div className="-mt-14 px-4 pb-6 text-center min-[380px]:px-5">
-          <div className="mx-auto h-32 w-32 overflow-hidden rounded-full border-4 border-card bg-card shadow-[var(--shadow-card)]">
+          <div className="mx-auto h-32 w-32 overflow-hidden rounded-full shadow-[var(--shadow-card)]">
             <img
               src={DOCTOR_PHOTO_SRC}
               alt="Dr. Chandresh Zinzala, Chiropractor & Osteopath at Spine-X Chiropractic Clinic"
-              className="h-full w-full scale-125 object-cover object-top"
+              className="h-full w-full scale-150 object-cover object-[center_18%]"
               width={256}
               height={256}
             />
@@ -436,13 +438,6 @@ function Index() {
             placeholder="Phone"
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="rounded-2xl border border-primary-foreground/25 bg-primary-foreground/12 px-3 py-2.5 text-sm placeholder:text-primary-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary-foreground/40"
-          />
-          <input
-            type="email"
-            placeholder="Email (optional)"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
             className="rounded-2xl border border-primary-foreground/25 bg-primary-foreground/12 px-3 py-2.5 text-sm placeholder:text-primary-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary-foreground/40"
           />
           <input
