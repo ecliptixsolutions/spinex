@@ -215,13 +215,15 @@ function Index() {
       <header className="overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-float)] min-[380px]:rounded-[2rem]">
         <div className="brand-gradient px-4 pb-16 pt-6 text-center min-[380px]:px-5">
           <div className="mx-auto flex flex-col items-center">
-            <img
-              src={LOGO_SRC}
-              alt="Spine-X Chiropractic Clinic logo"
-              className="h-16 w-auto drop-shadow-md sm:h-20"
-              width={280}
-              height={112}
-            />
+            <div className="rounded-xl bg-white px-3 py-2 shadow-md">
+              <img
+                src={LOGO_SRC}
+                alt="Spine-X Chiropractic Clinic logo"
+                className="h-14 w-auto sm:h-18"
+                width={280}
+                height={112}
+              />
+            </div>
           </div>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5">
             {["Chiropractor", "Osteopath", "COMT(UK)"].map((b) => (
@@ -235,11 +237,11 @@ function Index() {
           </div>
         </div>
         <div className="-mt-14 px-4 pb-6 text-center min-[380px]:px-5">
-          <div className="mx-auto h-32 w-32 overflow-hidden rounded-full shadow-[var(--shadow-card)]">
+          <div className="mx-auto h-36 w-36 overflow-hidden rounded-full shadow-[var(--shadow-card)]">
             <img
               src={DOCTOR_PHOTO_SRC}
               alt="Dr. Chandresh Zinzala, Chiropractor & Osteopath at Spine-X Chiropractic Clinic"
-              className="h-full w-full scale-150 object-cover object-[center_18%]"
+              className="h-full w-full object-cover object-[center_50%]"
               width={256}
               height={256}
             />
@@ -499,7 +501,7 @@ function Index() {
 
       {/* QR / share */}
       <section className="surface-card mt-4 p-4 text-center min-[380px]:p-5">
-        <SectionTitle eyebrow="Share" title="Scan This Card" />
+        <SectionTitle eyebrow="Share" title="Scan to View My Profile" />
         <img
           src={qrSrc}
           alt="QR code linking to the Spine-X Chiropractic digital card"
