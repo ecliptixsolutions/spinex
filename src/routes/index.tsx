@@ -19,9 +19,11 @@ import {
   CircleDot,
   Syringe,
   Wrench,
-  Calendar,
+  Calendar as CalendarIcon,
   CalendarCheck,
 } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -63,9 +65,15 @@ const CONDITIONS = [
   { name: "Back Pain", note: "Lumbar pain from muscle, tendon or disc injury." },
   { name: "Neck Pain", note: "Cervical discomfort from posture, strain or nerve compression." },
   { name: "Sciatica", note: "Pain radiating along the sciatic nerve into the leg." },
-  { name: "Cervical / Lumbar Disc Bulge", note: "Relieves nerve pressure and restores spinal function." },
+  {
+    name: "Cervical / Lumbar Disc Bulge",
+    note: "Relieves nerve pressure and restores spinal function.",
+  },
   { name: "Cervical Spondylosis", note: "Age-related degeneration of neck discs and joints." },
-  { name: "Rotator Cuff / Shoulder Pain", note: "Pain and weakness in overhead shoulder movement." },
+  {
+    name: "Rotator Cuff / Shoulder Pain",
+    note: "Pain and weakness in overhead shoulder movement.",
+  },
   { name: "Frozen Shoulder", note: "Adhesive capsulitis with pain and limited motion." },
   { name: "Posture Correction", note: "Improve alignment and reduce everyday strain." },
   { name: "Sports Injury", note: "Recovery for ligament tears and muscle strains." },
@@ -86,8 +94,14 @@ const THERAPIES = [
 
 const GALLERY = [
   { src: "/images/p-10.jpg", alt: "Chiropractic treatment session at Spine-X Chiropractic clinic" },
-  { src: "/images/p-11.jpg", alt: "Patient receiving spinal adjustment therapy at Spine-X Chiropractic" },
-  { src: "/images/p-12.jpg", alt: "Physiotherapy treatment in progress at Spine-X Chiropractic clinic" },
+  {
+    src: "/images/p-11.jpg",
+    alt: "Patient receiving spinal adjustment therapy at Spine-X Chiropractic",
+  },
+  {
+    src: "/images/p-12.jpg",
+    alt: "Physiotherapy treatment in progress at Spine-X Chiropractic clinic",
+  },
 ];
 
 const QUALIFICATIONS = [
@@ -149,11 +163,25 @@ function formatDateInputValue(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
+function parseDateInputValue(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return undefined;
+  return new Date(year, month - 1, day);
+}
+
+function isSundayDateInputValue(value: string) {
+  return parseDateInputValue(value)?.getDay() === 0;
+}
+
 function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="mb-5 text-center">
-      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-accent">{eyebrow}</p>
-      <h2 className="mt-1 font-display text-xl font-semibold leading-snug text-foreground sm:text-2xl">{title}</h2>
+      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-accent">
+        {eyebrow}
+      </p>
+      <h2 className="mt-1 font-display text-xl font-semibold leading-snug text-foreground sm:text-2xl">
+        {title}
+      </h2>
       <span className="brand-gradient mx-auto mt-3 block h-1 w-12 rounded-full" />
     </div>
   );
@@ -162,11 +190,20 @@ function SectionTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
 function Index() {
   const [cardUrl, setCardUrl] = useState(WEBSITE);
   const [form, setForm] = useState({ name: "", phone: "", need: "", date: "", time: "" });
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
   const today = formatDateInputValue(new Date());
+  const selectedDate = parseDateInputValue(form.date);
+  const todayDate = parseDateInputValue(today);
 
   useEffect(() => {
     setCardUrl(window.location.href.split("#")[0] ?? WEBSITE);
   }, []);
+
+  useEffect(() => {
+    if (isSundayDateInputValue(form.date)) {
+      setForm((current) => ({ ...current, date: "", time: "" }));
+    }
+  }, [form.date]);
 
   const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=${encodeURIComponent(cardUrl)}`;
 
@@ -198,6 +235,10 @@ function Index() {
 
   function submitEnquiry(e: React.FormEvent) {
     e.preventDefault();
+    if (!form.date || isSundayDateInputValue(form.date)) {
+      setForm((current) => ({ ...current, date: "", time: "" }));
+      return;
+    }
     const msg = `Appointment request%0A%0AName: ${form.name}%0APhone: ${form.phone}%0ARequirement: ${form.need}%0ADate: ${form.date}%0ATime Slot: ${form.time}`;
     window.open(`https://wa.me/91${PHONE}?text=${msg}`, "_blank");
   }
@@ -252,7 +293,9 @@ function Index() {
           <p className="mt-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-accent">
             Chiropractor &amp; Osteopath
           </p>
-          <p className="mt-2 text-xs text-muted-foreground">Spine-X Chiropractic Clinic · Akota, Vadodara</p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Spine-X Chiropractic Clinic · Akota, Vadodara
+          </p>
 
           <div className="mt-6 grid grid-cols-1 gap-2.5 min-[360px]:grid-cols-2">
             {actions.map(({ label, icon: Icon, href }) => (
@@ -293,8 +336,9 @@ function Index() {
       <section className="surface-card mt-4 p-4 min-[380px]:p-5">
         <SectionTitle eyebrow="About" title="Your Spine Health Specialist" />
         <p className="text-sm leading-relaxed text-muted-foreground">
-          Dr. Chandresh Zinzala is a qualified Chiropractor &amp; Osteopath with COMT(UK) certification and a
-          physiotherapy background, with years of experience treating spine-related conditions.
+          Dr. Chandresh Zinzala is a qualified Chiropractor &amp; Osteopath with COMT(UK)
+          certification and a physiotherapy background, with years of experience treating
+          spine-related conditions.
         </p>
         <ul className="mt-4 grid gap-2">
           {QUALIFICATIONS.map((q) => (
@@ -374,7 +418,10 @@ function Index() {
       {/* Contact / location */}
       <section className="surface-card mt-4 p-4 min-[380px]:p-5">
         <SectionTitle eyebrow="Contact" title="Visit Our Clinic" />
-        <a href={`tel:${TEL}`} className="flex items-center gap-3 rounded-2xl border border-border p-3">
+        <a
+          href={`tel:${TEL}`}
+          className="flex items-center gap-3 rounded-2xl border border-border p-3"
+        >
           <Phone className="h-4 w-4 shrink-0 text-accent" aria-hidden />
           <span className="text-sm font-semibold text-foreground">9099 244 119</span>
         </a>
@@ -423,8 +470,13 @@ function Index() {
       </section>
 
       {/* Appointment */}
-      <section id="book" className="brand-gradient mt-4 rounded-3xl p-4 text-primary-foreground min-[380px]:p-5">
-        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] opacity-80">Appointment</p>
+      <section
+        id="book"
+        className="brand-gradient mt-4 rounded-3xl p-4 text-primary-foreground min-[380px]:p-5"
+      >
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] opacity-80">
+          Appointment
+        </p>
         <h2 className="mt-1 font-display text-xl font-semibold">Book Your Consultation</h2>
         <form onSubmit={submitEnquiry} className="mt-4 grid gap-2">
           <input
@@ -448,27 +500,42 @@ function Index() {
             onChange={(e) => setForm({ ...form, need: e.target.value })}
             className="rounded-2xl border border-primary-foreground/25 bg-primary-foreground/12 px-3 py-2.5 text-sm placeholder:text-primary-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary-foreground/40"
           />
+          <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className={`relative w-full rounded-2xl border border-primary-foreground/25 bg-primary-foreground/12 px-9 py-2.5 text-left text-sm transition focus:outline-none focus:ring-2 focus:ring-primary-foreground/40 ${
+                  form.date ? "text-primary-foreground" : "text-primary-foreground/60"
+                }`}
+              >
+                <CalendarIcon
+                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-70"
+                  aria-hidden
+                />
+                {form.date || "Select Date"}
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-auto max-w-[calc(100vw-2rem)] p-0">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                disabled={(date) => date.getDay() === 0 || (todayDate ? date < todayDate : false)}
+                onSelect={(date) => {
+                  if (!date || date.getDay() === 0) {
+                    setForm({ ...form, date: "", time: "" });
+                    return;
+                  }
+                  setForm({ ...form, date: formatDateInputValue(date), time: "" });
+                  setDatePickerOpen(false);
+                }}
+              />
+            </PopoverContent>
+          </Popover>
           <label className="relative block">
-            <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-70" aria-hidden />
-            {!form.date && (
-              <span className="pointer-events-none absolute left-9 top-1/2 -translate-y-1/2 text-sm text-primary-foreground/60">
-                Select Date
-              </span>
-            )}
-            <input
-              required
-              type="date"
-              min={today}
-              value={form.date}
-              onClick={(e) => e.currentTarget.showPicker?.()}
-              onChange={(e) => setForm({ ...form, date: e.target.value, time: "" })}
-              className={`w-full rounded-2xl border border-primary-foreground/25 bg-primary-foreground/12 px-9 py-2.5 text-sm transition focus:outline-none focus:ring-2 focus:ring-primary-foreground/40 ${
-                form.date ? "text-primary-foreground" : "text-transparent"
-              }`}
+            <Clock
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-70"
+              aria-hidden
             />
-          </label>
-          <label className="relative block">
-            <Clock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-70" aria-hidden />
             <select
               required
               disabled={!form.date}
